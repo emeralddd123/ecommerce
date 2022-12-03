@@ -12,10 +12,10 @@ class Balance(models.Model):
         return self.balance + self.user
 
 class Item(models.Model):
-    title = models.CharField(max_length=100),
-    slug = models.SlugField(),
-    price = models.DecimalField(max_digits=7, decimal_places=2),
-    description = models.TextField(),
+    title = models.CharField(max_length=100)
+    slug = models.SlugField()
+    price = models.DecimalField(max_digits=7, decimal_places=2)
+    description = models.TextField()
     quantity = models.PositiveIntegerField()
     
     def __str__(self):
@@ -68,8 +68,6 @@ class Order(models.Model):
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField()
     ordered = models.BooleanField(default=False)
-    payment = models.ForeignKey(
-        'Payment', on_delete=models.SET_NULL, blank=True, null=True)
     coupon = models.ForeignKey(
         'Coupon', on_delete=models.SET_NULL, blank=True, null=True)
     being_delivered = models.BooleanField(default=False)
@@ -81,7 +79,6 @@ class Order(models.Model):
     1. Item added to cart
     2. Adding a billing address
     (Failed checkout)
-    3. Payment
     (Preprocessing, processing, packaging etc.)
     4. Being delivered
     5. Received
@@ -91,6 +88,7 @@ class Order(models.Model):
     def __str__(self):
         return self.user.email
 
+    
     def get_total(self):
         total = 0
         for order_item in self.items.all():
