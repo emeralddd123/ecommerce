@@ -10,7 +10,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from django.views.generic import ListView, DetailView, View
-from .models import Item, Order, OrderItem, Refund,Balance, Transaction
+from .models import Item, Order, OrderItem, Refund,Balance# , Transaction
 from .forms import RefundForm
 
 
@@ -136,7 +136,7 @@ def remove_single_item_from_cart(request, slug):
         messages.info(request, "You do not have an active order")
         return redirect("core:product", slug=slug)
 
-
+'''
 def get_coupon(request, code):
     try:
         coupon = Coupon.objects.get(code=code)
@@ -144,6 +144,8 @@ def get_coupon(request, code):
     except ObjectDoesNotExist:
         messages.info(request, "This coupon does not exist")
         return redirect("core:checkout")
+'''
+
 
 
 

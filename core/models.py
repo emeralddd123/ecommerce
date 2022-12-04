@@ -1,10 +1,13 @@
 from django.db import models
 from django.shortcuts import reverse
 from django.conf import settings
-
+from django.utils.text import slugify
+import random, string
 import qrcode
 # Create your models here.
 
+def generate_random_slug():
+    return ''.join(random.choice(string.digits) for _ in range(12))
 
 class Balance(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL,
@@ -16,15 +19,20 @@ class Balance(models.Model):
 
 class Item(models.Model):
     title = models.CharField(max_length=100)
-    slug = models.SlugField()
+    slug = models.SlugField(blank = True)
     price = models.DecimalField(max_digits=9, decimal_places=2)
-    dicount_price = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null = True)
+    discount_price = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null = True)
     description = models.TextField()
     quantity = models.PositiveIntegerField()
     image = models.ImageField()
     
     def __str__(self):
         return self.title
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title + '-' + generate_random_slug())
+        super(Item, self).save(*args, **kwargs)
     
     def get_absolute_url(self):
         return reverse("core:product", kwargs={'slug': self.slug})
@@ -97,8 +105,6 @@ class Order(models.Model):
         total = 0
         for order_item in self.items.all():
             total += order_item.get_final_price()
-        if self.coupon:
-            total -= self.coupon.amount
         return total
     
 
