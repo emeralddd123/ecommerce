@@ -17,3 +17,14 @@ class HomeView(ListView):
     model = Item
     paginate_by = 10
     template_name = "home.html"
+    
+    
+def products(request):
+    context = {
+        'items': Item.objects.all()
+    }
+    return render(request, "products.html", context)
+
+class ItemDetailView(DetailView):
+    model = Item
+    template_name = "product.html"

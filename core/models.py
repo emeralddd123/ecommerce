@@ -14,9 +14,11 @@ class Balance(models.Model):
 class Item(models.Model):
     title = models.CharField(max_length=100)
     slug = models.SlugField()
-    price = models.DecimalField(max_digits=7, decimal_places=2)
+    price = models.DecimalField(max_digits=9, decimal_places=2)
+    dicount_price = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null = True)
     description = models.TextField()
     quantity = models.PositiveIntegerField()
+    image = models.ImageField()
     
     def __str__(self):
         return self.title
