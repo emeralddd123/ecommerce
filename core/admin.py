@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Item, OrderItem, Order, Coupon, Refund, Balance
+from .models import Item, OrderItem, Order, Refund, Balance
 
 
 def make_refund_accepted(modeladmin, request, queryset):
@@ -17,12 +17,10 @@ class OrderAdmin(admin.ModelAdmin):
                     'received',
                     'refund_requested',
                     'refund_granted',
-                    'coupon',
                     
                     ]
     list_display_links = [
         'user',
-        'coupon',
     ]
     list_filter = ['ordered',
                    'being_delivered',
@@ -31,7 +29,6 @@ class OrderAdmin(admin.ModelAdmin):
                    'refund_granted']
     search_fields = [
         'user__email',
-        'ref_code'
     ]
     actions = [make_refund_accepted]
 
@@ -42,5 +39,4 @@ admin.site.register(Item)
 admin.site.register(OrderItem)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Balance)
-admin.site.register(Coupon)
 admin.site.register(Refund)

@@ -1,7 +1,10 @@
 from django.db import models
 from django.shortcuts import reverse
 from django.conf import settings
+
+import qrcode
 # Create your models here.
+
 
 class Balance(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL,
@@ -70,8 +73,7 @@ class Order(models.Model):
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField()
     ordered = models.BooleanField(default=False)
-    coupon = models.ForeignKey(
-        'Coupon', on_delete=models.SET_NULL, blank=True, null=True)
+
     being_delivered = models.BooleanField(default=False)
     received = models.BooleanField(default=False)
     refund_requested = models.BooleanField(default=False)
@@ -100,14 +102,6 @@ class Order(models.Model):
         return total
     
 
-class Coupon(models.Model):
-    code = models.CharField(max_length=15)
-    amount = models.FloatField()
-
-    def __str__(self):
-        return self.code
-
-
 class Refund(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     reason = models.TextField()
@@ -116,4 +110,10 @@ class Refund(models.Model):
 
     def __str__(self):
         return f"{self.pk}"
-
+'''
+class Transaction(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE) 
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=9, decimal_places=2)
+'''
