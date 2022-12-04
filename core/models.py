@@ -6,7 +6,7 @@ from django.conf import settings
 class Balance(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL,
                              on_delete=models.SET_NULL, blank=True, null=True)
-    balance = models.FloatField(default=150000)
+    balance = models.FloatField(default=25000)
 
     def __str__(self):
         return self.balance + self.user
@@ -116,6 +116,4 @@ class Refund(models.Model):
 
     def __str__(self):
         return f"{self.pk}"
-
-
 
