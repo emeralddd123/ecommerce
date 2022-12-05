@@ -150,13 +150,16 @@ class CheckoutView(View):
     def get(self, *args, **kwargs):
         try:
             order = Order.objects.get(user=self.request.user, ordered=False)
+            amount = order.get_total()
             form = CheckoutForm()
+            balance = Balance.objects.get(user=self.request.user)
             context = {
+                'amount': amount,
                 'form': form,
-               
+                'balance':balance,
                 'order': order,
             }
-
+            print (context)
             return render(self.request, "checkout.html", context)
         except ObjectDoesNotExist:
             messages.info(self.request, "You do not have an active order")
@@ -166,10 +169,14 @@ class CheckoutView(View):
         form = CheckoutForm(self.request.POST or None)
         try:
             order = Order.objects.get(user=self.request.user, ordered=False)
+            amount = order.get_total
+            balance = Balance.objects.get(user=self.request.user)
             form = CheckoutForm()
             context = {
+                'amount': amount,
                 'form': form,
-                'order': order,  
+                'order': order, 
+                'balance':balance.balance,
             }
             return render(self.request, "checkout.html", context)
         except ObjectDoesNotExist:
