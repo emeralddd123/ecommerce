@@ -116,10 +116,13 @@ class Refund(models.Model):
 
     def __str__(self):
         return f"{self.pk}"
-'''
+    
+
 class Transaction(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE) 
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=9, decimal_places=2)
-'''
+    success = models.BooleanField()
+
+

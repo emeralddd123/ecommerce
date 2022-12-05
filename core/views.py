@@ -11,7 +11,7 @@ from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from django.views.generic import ListView, DetailView, View
 from .models import Item, Order, OrderItem, Refund,Balance# , Transaction
-from .forms import RefundForm
+from .forms import RefundForm, CheckoutForm
 
 
 
@@ -146,6 +146,35 @@ def get_coupon(request, code):
         return redirect("core:checkout")
 '''
 
+class CheckoutView(View):
+    def get(self, *args, **kwargs):
+        try:
+            order = Order.objects.get(user=self.request.user, ordered=False)
+            form = CheckoutForm()
+            context = {
+                'form': form,
+               
+                'order': order,
+            }
+
+            return render(self.request, "checkout.html", context)
+        except ObjectDoesNotExist:
+            messages.info(self.request, "You do not have an active order")
+            return redirect("core:checkout")
+
+    def post(self, *args, **kwargs):
+        form = CheckoutForm(self.request.POST or None)
+        try:
+            order = Order.objects.get(user=self.request.user, ordered=False)
+            form = CheckoutForm()
+            context = {
+                'form': form,
+                'order': order,  
+            }
+            return render(self.request, "checkout.html", context)
+        except ObjectDoesNotExist:
+            messages.warning(self.request, "You do not have an active order")
+            return redirect("core:order-summary")
 
 
 

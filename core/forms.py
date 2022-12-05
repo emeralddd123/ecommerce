@@ -9,3 +9,11 @@ class RefundForm(forms.Form):
     email = forms.EmailField()
 
 
+class CheckoutForm(forms.Form):
+    order = forms.CharField()
+    amount = forms.DecimalField(widget=forms.DecimalField)
+    
+class TransactionForm(forms.Form):
+    order = forms.CharField()
+    amount = forms.DecimalField(widget=forms.DecimalField)
+    success = forms.BooleanField(widget=forms.CheckboxInput)
