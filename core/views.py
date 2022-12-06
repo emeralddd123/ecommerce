@@ -15,18 +15,23 @@ from .forms import RefundForm, CheckoutForm
 
 
 
+
+
 def create_ref_code():
     return ''.join(random.choices(string.ascii_lowercase + string.digits, k=20))# Create your views here.
 
+    
 class HomeView(ListView):
     model = Item
     paginate_by = 10
     template_name = "home.html"
+
     
     
 def products(request):
     context = {
-        'items': Item.objects.all()
+        'items': Item.objects.all(),
+        'user_balance': Balance.objects.filter(user=request.user)
     }
     return render(request, "products.html", context)
 
@@ -146,17 +151,18 @@ def get_coupon(request, code):
         return redirect("core:checkout")
 '''
 
-class CheckoutView(View):
+class CheckoutView(LoginRequiredMixin, View):
     def get(self, *args, **kwargs):
         try:
             order = Order.objects.get(user=self.request.user, ordered=False)
             amount = order.get_total()
             form = CheckoutForm()
-            balance = Balance.objects.get(user=self.request.user)
+            form.fields['amount'].initial = amount
+            #balance = Balance.objects.get(user=self.request.user)
             context = {
                 'amount': amount,
                 'form': form,
-                'balance':balance,
+                #'balance':balance.balance,
                 'order': order,
             }
             print (context)
@@ -165,23 +171,6 @@ class CheckoutView(View):
             messages.info(self.request, "You do not have an active order")
             return redirect("core:checkout")
 
-    def post(self, *args, **kwargs):
-        form = CheckoutForm(self.request.POST or None)
-        try:
-            order = Order.objects.get(user=self.request.user, ordered=False)
-            amount = order.get_total
-            balance = Balance.objects.get(user=self.request.user)
-            form = CheckoutForm()
-            context = {
-                'amount': amount,
-                'form': form,
-                'order': order, 
-                'balance':balance.balance,
-            }
-            return render(self.request, "checkout.html", context)
-        except ObjectDoesNotExist:
-            messages.warning(self.request, "You do not have an active order")
-            return redirect("core:order-summary")
 
 
 

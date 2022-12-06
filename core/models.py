@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.signals import post_save
 from django.shortcuts import reverse
 from django.conf import settings
 from django.utils.text import slugify
@@ -12,10 +13,10 @@ def generate_random_slug():
 class Balance(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL,
                              on_delete=models.SET_NULL, blank=True, null=True)
-    balance = models.FloatField(default=25000)
+    balance = models.FloatField(default=25000.00)
 
     def __str__(self):
-        return self.balance + self.user
+        return self.user.email
 
 class Item(models.Model):
     title = models.CharField(max_length=100)
@@ -123,6 +124,7 @@ class Transaction(models.Model):
                              on_delete=models.CASCADE) 
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=9, decimal_places=2)
+    
     success = models.BooleanField()
 
 

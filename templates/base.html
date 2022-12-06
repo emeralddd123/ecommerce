@@ -34,26 +34,28 @@
                         <li class="nav-item active">
                             <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
                         </li>
-                        <li class="nav-item dropdown">
-                
-                            <ul class="dropdown-menu">
-                                <li><a href="about.html">About</a></li>
-                                <li><a href="testimonial.html">Testimonial</a></li>
-                            </ul>
-                        </li>
-        
-                        {% if user is not authenticated %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="contact.html">Login/Signup</a>
-                            </li>
-                        {% else %}
-                        {% endif %}
-                        
+
                         <li class="nav-item">
                             <a class="nav-link" href="/order-summary">
                                 <i class=" bi bi-cart-fill" style=""></i>
                             </a>
                         </li>
+                        
+                        <li class="nav-item">
+                            <p><b> {{ user.balance.balance }} </b></p>
+                        </li>
+
+                        {% if user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="/accounts/logout">Logout</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="/accounts/login">login</a>
+                            </li>
+                        {% endif %}
+                        
+                        
                         
                     </ul>
                 </div>

@@ -10,8 +10,7 @@ class RefundForm(forms.Form):
 
 
 class CheckoutForm(forms.Form):
-    order = forms.CharField()
-    amount = forms.DecimalField(widget=forms.RadioSelect)
+    amount = forms.DecimalField( widget=forms.RadioSelect)
     
 class TransactionForm(forms.Form):
     order = forms.CharField()
