@@ -27,6 +27,13 @@ class HomeView(ListView):
     template_name = "home.html"
 
     
+def is_valid_form(values):
+    valid = True
+    for field in values:
+        if field == '':
+            valid = False
+    return valid
+
     
 def products(request):
     context = {
@@ -142,15 +149,7 @@ def remove_single_item_from_cart(request, slug):
         messages.info(request, "You do not have an active order")
         return redirect("core:product", slug=slug)
 
-'''
-def get_coupon(request, code):
-    try:
-        coupon = Coupon.objects.get(code=code)
-        return coupon
-    except ObjectDoesNotExist:
-        messages.info(request, "This coupon does not exist")
-        return redirect("core:checkout")
-'''
+
 
 class RequestRefundView(View):
     def get(self, *args, **kwargs):
