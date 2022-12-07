@@ -10,8 +10,8 @@ from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from django.views.generic import ListView, DetailView, View
-from .models import Item, Order, OrderItem, Refund,Balance# , Transaction
-from .forms import RefundForm, CheckoutForm
+from .models import Item, Order, OrderItem, Refund,Balance , Transaction
+from .forms import RefundForm, PaymentForm
 
 
 
@@ -78,6 +78,7 @@ def add_to_cart(request, slug):
         ordered_date = timezone.now()
         order = Order.objects.create(
             user=request.user, ordered_date=ordered_date)
+        
         order.items.add(order_item)
         messages.info(request, "This item was added to your cart.")
         return redirect("core:order-summary")
@@ -151,31 +152,6 @@ def get_coupon(request, code):
         return redirect("core:checkout")
 '''
 
-class CheckoutView(LoginRequiredMixin, View):
-    def get(self, *args, **kwargs):
-        try:
-            order = Order.objects.get(user=self.request.user, ordered=False)
-            amount = order.get_total()
-            form = CheckoutForm()
-            form.fields['amount'].initial = amount
-            #balance = Balance.objects.get(user=self.request.user)
-            context = {
-                'amount': amount,
-                'form': form,
-                #'balance':balance.balance,
-                'order': order,
-            }
-            print (context)
-            return render(self.request, "checkout.html", context)
-        except ObjectDoesNotExist:
-            messages.info(self.request, "You do not have an active order")
-            return redirect("core:checkout")
-
-
-
-
-
-
 class RequestRefundView(View):
     def get(self, *args, **kwargs):
         form = RefundForm()
@@ -215,46 +191,45 @@ class RequestRefundView(View):
 
 class PaymentView(View):
     def get(self, *args, **kwargs):
+        form = PaymentForm()
         order = Order.objects.get(user=self.request.user, ordered=False)
-            
+        amount = order.get_total()
         context = {
             'order': order,
-            'DISPLAY_COUPON_FORM': False,
+            'amount': amount,
+            'form': form,
         }
-        
+        return render(self.request, "payment.html", context)
 
     def post(self, *args, **kwargs):
         order = Order.objects.get(user=self.request.user, ordered=False)
-        balance = Balance.object.get(user=self.request.user)
-        amount = int(order.get_total() * 100)
+        balance = Balance.objects.get(user=self.request.user)
+        amount = int(order.get_total())
 
         try:
-
-            if balance.balance() > amount:
-                
-                balance.balance = balance.balance - amount
-                # create the payment
-                payment = Payment()
-                payment.stripe_charge_id = charge['id']
-                payment.user = self.request.user
-                payment.amount = order.get_total()
-
+            print(balance.balance)
+            print(type(amount))
+            print(type(balance.balance))
+            if int(balance.balance) > amount:
+                print('is true')
+                balance.balance = int(balance.balance) - int(amount)
+                balance.save
                 # assign the payment to the orde    
                 order_items = order.items.all()
                 order_items.update(ordered=True)
                 for item in order_items:
                     item.save()
                 order.ordered = True
-                order.payment = payment
-                order.ref_code = create_ref_code()
                 order.save()
+                transact = Transaction(user=self.request.user, order=order, amount=amount, success=True )
+                transact.save()
                 messages.success(self.request, "Your order was successful!")
                 return redirect("/")
         
-        except amount > balance.balance():
+        except amount > int(balance.balance):
             messages.warning(self.request, "Insufficent Funds")
            
 
         messages.warning(self.request, "Invalid data received")
-        return redirect("/payment/stripe/")
+        return redirect("/payment")
 

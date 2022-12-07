@@ -7,13 +7,14 @@ import random, string
 import qrcode
 # Create your models here.
 
+
 def generate_random_slug():
     return ''.join(random.choice(string.digits) for _ in range(12))
 
 class Balance(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL,
                              on_delete=models.SET_NULL, blank=True, null=True)
-    balance = models.FloatField(default=25000.00)
+    balance = models.DecimalField(max_digits=14, decimal_places=2, default=30000)
 
     def __str__(self):
         return self.user.email
@@ -121,10 +122,28 @@ class Refund(models.Model):
 
 class Transaction(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE) 
+                             on_delete=models.CASCADE)
+    slug = models.SlugField(blank = True)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=9, decimal_places=2)
     
     success = models.BooleanField()
 
+    def __str__(self):
+        return self.slug
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.user.email + '-' + generate_random_slug())
+        super(Item, self).save(*args, **kwargs)
+        
+    def generate_reciept(self, *args, **kwargs):
+        
+        return None
+        
+    def generate_qrcode(self, *args, **kwargs):
+        
+        return None
+        
+        
 
