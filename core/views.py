@@ -1,14 +1,15 @@
 import random
 import string
 
+from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import redirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
 from django.utils import timezone
+from django.urls import reverse
 from django.views.generic import ListView, DetailView, View
 from .models import Item, Order, OrderItem, Refund,Balance , Transaction
 from .forms import RefundForm, PaymentForm
@@ -18,7 +19,7 @@ from .forms import RefundForm, PaymentForm
 
 
 def create_ref_code():
-    return ''.join(random.choices(string.ascii_lowercase + string.digits, k=20))# Create your views here.
+    return ''.join(random.choices(string.ascii_lowercase + string.digits, k=20))
 
     
 class HomeView(ListView):
@@ -203,33 +204,60 @@ class PaymentView(View):
 
     def post(self, *args, **kwargs):
         order = Order.objects.get(user=self.request.user, ordered=False)
+        store_items = Item.objects.all()
         balance = Balance.objects.get(user=self.request.user)
         amount = int(order.get_total())
-
+        
         try:
-            print(balance.balance)
-            print(type(amount))
+           
+            #print(type(amount))
             print(type(balance.balance))
-            if int(balance.balance) > amount:
+            if balance.balance > amount:
                 print('is true')
-                balance.balance = int(balance.balance) - int(amount)
-                balance.save
+                balance.balance = balance.balance - amount
+                balance.save()
                 # assign the payment to the orde    
                 order_items = order.items.all()
                 order_items.update(ordered=True)
                 for item in order_items:
+                    for store_item in store_items:
+                        if store_item.slug == item.item.slug:
+                            store_item.quantity -= item.quantity
+                        store_item.save()
                     item.save()
+                    
+                order.ref_code = create_ref_code()
+                transact = Transaction(user=self.request.user, order=order, amount=int(amount), success=True )
+                print(transact)         
                 order.ordered = True
-                order.save()
-                transact = Transaction(user=self.request.user, order=order, amount=amount, success=True )
                 transact.save()
+                
+                order.save()
                 messages.success(self.request, "Your order was successful!")
-                return redirect("/")
-        
-        except amount > int(balance.balance):
-            messages.warning(self.request, "Insufficent Funds")
+                return HttpResponseRedirect(
+                    reverse('reciept', kwargs={'transaction':transact}))
+
+            else:
+                messages.warning(self.request, "Insufficent Funds")
+                
+        except TypeError:
+            print(TypeError) 
+
+            
            
 
         messages.warning(self.request, "Invalid data received")
         return redirect("/payment")
+    
+    
+
+def receiptview(request,transaction_id):
+    def get(self,transaction_id):
+        
+        #transaction = Transaction.objects.get(id=transaction_id)
+    
+        context= {
+        #'transaction':transaction,
+        }
+        return render(request, "reciept.html", context)
 

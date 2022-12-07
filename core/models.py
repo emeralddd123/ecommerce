@@ -14,7 +14,7 @@ def generate_random_slug():
 class Balance(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL,
                              on_delete=models.SET_NULL, blank=True, null=True)
-    balance = models.DecimalField(max_digits=14, decimal_places=2, default=30000)
+    balance = models.PositiveIntegerField(default=30000)
 
     def __str__(self):
         return self.user.email
@@ -89,15 +89,7 @@ class Order(models.Model):
     refund_requested = models.BooleanField(default=False)
     refund_granted = models.BooleanField(default=False)
     
-    '''
-    1. Item added to cart
-    2. Adding a billing address
-    (Failed checkout)
-    (Preprocessing, processing, packaging etc.)
-    4. Being delivered
-    5. Received
-    6. Refunds
-    '''
+ 
 
     def __str__(self):
         return self.user.email
@@ -125,8 +117,7 @@ class Transaction(models.Model):
                              on_delete=models.CASCADE)
     slug = models.SlugField(blank = True)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    amount = models.DecimalField(max_digits=9, decimal_places=2)
-    
+    amount = models.PositiveIntegerField() 
     success = models.BooleanField()
 
     def __str__(self):
@@ -135,7 +126,7 @@ class Transaction(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.user.email + '-' + generate_random_slug())
-        super(Item, self).save(*args, **kwargs)
+        super(Transaction, self).save(*args, **kwargs)
         
     def generate_reciept(self, *args, **kwargs):
         

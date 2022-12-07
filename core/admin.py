@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Item, OrderItem, Order, Refund, Balance
+from .models import Item, OrderItem, Order, Refund, Balance, Transaction
 
 
 def make_refund_accepted(modeladmin, request, queryset):
@@ -17,7 +17,6 @@ class OrderAdmin(admin.ModelAdmin):
                     'received',
                     'refund_requested',
                     'refund_granted',
-                    
                     ]
     list_display_links = [
         'user',
@@ -40,3 +39,4 @@ admin.site.register(OrderItem)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Balance)
 admin.site.register(Refund)
+admin.site.register(Transaction)
