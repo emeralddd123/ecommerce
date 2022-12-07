@@ -4,6 +4,7 @@ from django.shortcuts import reverse
 from django.conf import settings
 from django.utils.text import slugify
 import random, string
+
 import qrcode
 # Create your models here.
 
@@ -92,7 +93,7 @@ class Order(models.Model):
  
 
     def __str__(self):
-        return self.user.email
+        return self.user.email + " " + str(self.ref_code)
 
     
     def get_total(self):
@@ -103,10 +104,12 @@ class Order(models.Model):
     
 
 class Refund(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     reason = models.TextField()
     accepted = models.BooleanField(default=False)
-    email = models.EmailField()
+    
 
     def __str__(self):
         return f"{self.pk}"
