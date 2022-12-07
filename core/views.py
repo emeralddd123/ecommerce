@@ -234,8 +234,7 @@ class PaymentView(View):
                 
                 order.save()
                 messages.success(self.request, "Your order was successful!")
-                return HttpResponseRedirect(
-                    reverse('homepage'))
+                return redirect("/")
 
             else:
                 messages.warning(self.request, "Insufficent Funds")
@@ -251,7 +250,6 @@ class PaymentView(View):
     
     
 
-def receiptview(request):
-    
-        return render(request, "reciept.html", context)
-
+class RecieptView(DetailView):
+    model=Order
+    template_name = "reciept.html"
