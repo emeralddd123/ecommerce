@@ -31,6 +31,13 @@ class OrderAdmin(admin.ModelAdmin):
     ]
     actions = [make_refund_accepted]
 
+class ItemAdmin(admin.ModelAdmin):
+    list_display = ['title',
+                    'price',
+                    'quantity',
+                    ]
+    
+    
 
 
 

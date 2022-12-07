@@ -50,7 +50,7 @@ class OrderSummaryView(LoginRequiredMixin, View):
             }
             return render(self.request, 'order_summary.html', context)
         except ObjectDoesNotExist:
-            messages.warning(self.request, "You do not have an active order")
+            messages.warning(self.request, "You do not have any order in the cart,please add items to cart")
             return redirect("/")
     
 
@@ -235,7 +235,7 @@ class PaymentView(View):
                 order.save()
                 messages.success(self.request, "Your order was successful!")
                 return HttpResponseRedirect(
-                    reverse('reciept', kwargs={'transaction':transact}))
+                    reverse('homepage'))
 
             else:
                 messages.warning(self.request, "Insufficent Funds")
@@ -251,13 +251,7 @@ class PaymentView(View):
     
     
 
-def receiptview(request,transaction_id):
-    def get(self,transaction_id):
-        
-        #transaction = Transaction.objects.get(id=transaction_id)
+def receiptview(request):
     
-        context= {
-        #'transaction':transaction,
-        }
         return render(request, "reciept.html", context)
 

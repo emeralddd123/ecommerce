@@ -17,7 +17,7 @@ class Balance(models.Model):
     balance = models.PositiveIntegerField(default=30000)
 
     def __str__(self):
-        return self.user.email
+        return self.user.email +" has "+ str(self.balance) + " balance"
 
 class Item(models.Model):
     title = models.CharField(max_length=100)
