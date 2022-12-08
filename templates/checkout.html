@@ -15,7 +15,7 @@
               {% csrf_token %}
                 {{form|crispy }}
               <hr class="mb-4">
-              <p> <b>Total Amount: {{amount}}</b> </p>
+              <p> <b>Total Amount: {{amount|intcomma}}</b> </p>
               <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
 
             </form>

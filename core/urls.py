@@ -21,7 +21,8 @@ urlpatterns = [
          name='remove-single-item-from-cart'),
     path('payment/', PaymentView.as_view(), name='payment'),
     path('reciept/<pk>/',RecieptView.as_view(), name='reciept'), 
-    path('request-refund/', RequestRefundView.as_view(), name='request-refund')
+    path('request-refund/', RequestRefundView.as_view(), name='request-refund'),
     
+
 ]
 

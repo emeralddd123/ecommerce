@@ -251,3 +251,10 @@ class PaymentView(View):
 class RecieptView(DetailView):
     model=Order
     template_name = "reciept.html"
+    
+
+
+    
+
+    
+

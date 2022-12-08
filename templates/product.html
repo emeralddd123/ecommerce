@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 
+{%load humanize%}
 {% block title %}
 
 {% endblock title %}
@@ -30,9 +31,9 @@
             <p class="lead">
               {% if object.discount_price %}
               <span class="mr-1">
-                <del>${{ object.price }}</del>
+                <del>${{ object.price|intcomma }}</del>
               </span>
-              <span>${{ object.discount_price }}</span>
+              <span>${{ object.discount_price|intcomma }}</span>
               {% else %}
               <span>${{ object.price }}</span>
               {% endif %}
