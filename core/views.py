@@ -1,7 +1,7 @@
 import random
 import string
 
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -191,7 +191,8 @@ class RequestRefundView(View):
 class PaymentView(View):
     def get(self, *args, **kwargs):
         form = PaymentForm()
-        order = Order.objects.get(user=self.request.user, ordered=False)
+        #order = Order.objects.get(user=self.request.user, ordered=False)
+        order = Order.objects.all().last()
         amount = order.get_total()
         context = {
             'order': order,
@@ -200,8 +201,9 @@ class PaymentView(View):
         }
         return render(self.request, "payment.html", context)
 
-    def post(self, *args, **kwargs):
-        order = Order.objects.get(user=self.request.user, ordered=False)
+    def post(self,request, *args, **kwargs):
+        #order = Order.objects.get(user=self.request.user, ordered=False)
+        order = Order.objects.all().last()
         store_items = Item.objects.all()
         balance = Balance.objects.get(user=self.request.user)
         amount = int(order.get_total())
@@ -215,9 +217,11 @@ class PaymentView(View):
                 balance.balance = balance.balance - amount
                 balance.save()
                 # assign the payment to the orde    
+                its = []
                 order_items = order.items.all()
                 order_items.update(ordered=True)
                 for item in order_items:
+                    its.append(item)
                     for store_item in store_items:
                         if store_item.slug == item.item.slug:
                             store_item.quantity -= item.quantity
@@ -232,7 +236,9 @@ class PaymentView(View):
                 
                 order.save()
                 messages.success(self.request, "Your order was successful!")
-                return redirect("/")
+                
+                #return redirect("/")
+                return redirect("core:reciept", kwargs={"its":its})
 
             else:
                 messages.warning(self.request, "Insufficent Funds")
@@ -247,10 +253,9 @@ class PaymentView(View):
         return redirect("/payment")
     
     
-
-class RecieptView(DetailView):
-    model=Order
-    template_name = "reciept.html"
+def recieptview(request, *args, **kwargs):
+    
+    return render(request, 'reciept.html', kwargs=kwargs)
     
 
 

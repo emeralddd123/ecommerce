@@ -3,7 +3,7 @@ from .views import(
     ItemDetailView,
     HomeView,
     OrderSummaryView,
-    RecieptView,
+    recieptview,
     add_to_cart,
     remove_from_cart,
     remove_single_item_from_cart,
@@ -20,7 +20,7 @@ urlpatterns = [
     path('remove-item-from-cart/<slug>/', remove_single_item_from_cart,
          name='remove-single-item-from-cart'),
     path('payment/', PaymentView.as_view(), name='payment'),
-    path('reciept/<pk>/',RecieptView.as_view(), name='reciept'), 
+    path('reciept/',recieptview, name='reciept'), 
     path('request-refund/', RequestRefundView.as_view(), name='request-refund'),
     
 

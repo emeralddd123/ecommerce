@@ -6,8 +6,7 @@
     <div class="container mt-5">
         <div class="">
             <h2>Reciept</h2>
-            {{order}}
-            {{order.orderitems}}
+            
         </div>
 
         <table class="table table-dark">
@@ -20,14 +19,16 @@
                 </tr>
             </thead>
             <tbody>
-                {% for it in order.orderitem %}
+                {% for it in its %}
                 
                 
                 <tr>
+                    {%comment%}
                     <td>{{it.item.title}}</td>
                     <td>{{it.quantity}}</td>
                     <td>{{it.item.price}}</td>
                     <td>{% widthratio it.quantity 1 it.item.price %}</td>
+                    {% endcomment %}
                 </tr>
                 {% endfor %}
             </tbody>
