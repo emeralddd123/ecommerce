@@ -39,10 +39,11 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
+                       {% if user.is_authenticated %}
                         <li class="nav-item active float-right">
                             <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
                         </li>
-                        <li class="nav-item float-right">
+                        <li class="nav-item active float-right">
                             <a class="nav-link " href="/order-summary">
                                 <i class=" bi bi-cart-fill" style="font-size: larger;"></i>
                             </a>
@@ -50,21 +51,24 @@
                         <li class="nav-item">
                             <p style="margin-left: 5px; margin-right: 5px;"><b>$ {{ user.balance.balance|intcomma }} </b></p>
                         </li>
-                        {% if user.is_authenticated %}
-                        <li class="nav-item float-right">
+                        
+                        <li class="nav-item active float-right">
                             <p style="margin-left: 5px; margin-right: 5px;">welcome,  {{ user.email }} </p>
 
                         </li>
-                        <li class="nav-item float-right">
+                        <li class="nav-item active float-right">
                             <a class="nav-link" href="/request-refund/">Refund</a>
                         </li>
-                        <li class="nav-item float-right">
+                        <li class="nav-item active float-right">
                             <a class="nav-link" href="/accounts/logout">Logout</a>
                         </li>
                         
                         {% else %}
-                        <li class="nav-item float-right">
-                            <a class="nav-link" href="/accounts/signup">login/signup</a>
+                        <li class="nav-item active float-right">
+                            <a class="nav-link" href="/accounts/login">login</a>
+                        </li>
+                        <li class="nav-item active float-right">
+                            <a class="nav-link" href="/accounts/signup">signup</a>
                         </li>
                         {% endif %}
 
