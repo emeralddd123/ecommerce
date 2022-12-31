@@ -11,6 +11,9 @@
             <h5>Items bought by {{request.user}}</h5>
             <br>
             <br>
+            <p>order reference code: <b>{{order_ref_code}}</b></p>
+            <br>
+            <br>
         </div>
 
         <table class="table table-dark">
@@ -48,9 +51,9 @@
             </tbody>
         </table>
 
-        <div class="qr-img">
+        <div class="qr-img" >
             {% if img_name %}
-                <img src="/media/{{ img_name }}" alt="qr code">
+                <img width="200" height="200" src="/media/{{ img_name }}" alt="qr code">
             {% endif %}
         </div>
 
