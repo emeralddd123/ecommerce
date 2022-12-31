@@ -175,8 +175,6 @@ class RequestRefundView(View):
 class PaymentView(View):
     def get(self, *args, **kwargs):
         form = PaymentForm()
-        # order = Order.objects.get(user=self.request.user, ordered=False)
-        #order = Order.objects.all().last()
         order=Order.objects.filter(user=self.request.user).last()
         amount = order.get_total()
         context = {
@@ -187,22 +185,18 @@ class PaymentView(View):
         return render(self.request, "payment.html", context)
 
     def post(self, request, *args, **kwargs):
-        # order = Order.objects.get(user=self.request.user, ordered=False)
-        #order = Order.objects.all().last()
+
         order=Order.objects.filter(user=self.request.user).last()
         store_items = Item.objects.all()
         balance = Balance.objects.get(user=self.request.user)
         amount = int(order.get_total())
 
         try:
-
-            # print(type(amount))
             print(type(balance.balance))
             if balance.balance > amount:
                 print("is true")
                 balance.balance = balance.balance - amount
                 balance.save()
-                # assign the payment to the orde
 
                 order_items = order.items.all()
                 order_items.update(ordered=True)
@@ -258,7 +252,6 @@ def recieptview(request, *args, **kwargs):
     for models in its:
         key = models["fields"]["item"]
         qty = models["fields"]["quantity"]
-        # print(models['fields']['item'])
         item = Item.objects.get(pk=key)
         reciep.append(
             dict(qty=qty, item_name=item.title, item_price=item.discount_price)
@@ -278,7 +271,7 @@ def recieptview(request, *args, **kwargs):
     )
     img = make(data)
     img_name = "qr" + str(request.user) + "__" + order_ref_code + ".png"
-    img.save(settings.MEDIA_ROOT + "/qr_codes" + img_name)
+    img.save(settings.MEDIA_ROOT + "/" + img_name)
 
     return render(
         request,
