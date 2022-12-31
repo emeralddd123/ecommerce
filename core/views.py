@@ -192,9 +192,7 @@ class PaymentView(View):
         amount = int(order.get_total())
 
         try:
-            print(type(balance.balance))
             if balance.balance > amount:
-                print("is true")
                 balance.balance = balance.balance - amount
                 balance.save()
 
@@ -209,14 +207,12 @@ class PaymentView(View):
 
                 order.ref_code = create_ref_code()
                 request.session["order_ref_code"] = order.ref_code
-                print(order.ref_code)
                 transact = Transaction(
                     user=self.request.user,
                     order=order,
                     amount=int(amount),
                     success=True,
                 )
-                print(transact)
                 order.ordered = True
                 transact.save()
 
