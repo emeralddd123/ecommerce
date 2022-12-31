@@ -176,7 +176,8 @@ class PaymentView(View):
     def get(self, *args, **kwargs):
         form = PaymentForm()
         # order = Order.objects.get(user=self.request.user, ordered=False)
-        order = Order.objects.all().last()
+        #order = Order.objects.all().last()
+        order=Order.objects.filter(user=self.request.user).last()
         amount = order.get_total()
         context = {
             "order": order,
@@ -187,7 +188,8 @@ class PaymentView(View):
 
     def post(self, request, *args, **kwargs):
         # order = Order.objects.get(user=self.request.user, ordered=False)
-        order = Order.objects.all().last()
+        #order = Order.objects.all().last()
+        order=Order.objects.filter(user=self.request.user).last()
         store_items = Item.objects.all()
         balance = Balance.objects.get(user=self.request.user)
         amount = int(order.get_total())
