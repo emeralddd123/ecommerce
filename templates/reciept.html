@@ -6,7 +6,11 @@
     <div class="container mt-5">
         <div class="">
             <h2>Reciept</h2>
-            
+            <br>
+            <br>
+            <h5>Items bought by {{request.user}}</h5>
+            <br>
+            <br>
         </div>
 
         <table class="table table-dark">
@@ -15,27 +19,43 @@
                     <th scope="col">Name</th>
                     <th scope="col">quantity</th>
                     <th scope="col">price</th>
-                    <th scope="col">sub-price</th>
+                    <th scope="col">sub-total</th>
                 </tr>
             </thead>
             <tbody>
+               
                 {% for it in its %}
                 
                 
                 <tr>
-                    {%comment%}
-                    <td>{{it.item.title}}</td>
-                    <td>{{it.quantity}}</td>
-                    <td>{{it.item.price}}</td>
-                    <td>{% widthratio it.quantity 1 it.item.price %}</td>
-                    {% endcomment %}
+                    <td>{{ it.item_name }}</td>
+                    <td>{{it.qty}}</td>
+                    <td>{{it.item_price}}</td>
+                    <td>{% widthratio it.qty 1 it.item_price %}</td>
+                
                 </tr>
+
                 {% endfor %}
+                
+                <tr>
+                    <td><b>TOTAL</b></td>
+                    <td></td>
+                    <td></td>
+                    <td><b>{{total}}</b></td>
+                
+                </tr>
+                
             </tbody>
         </table>
 
+        <div class="qr-img">
+            {% if img_name %}
+                <img src="/media/{{ img_name }}" alt="qr code">
+            {% endif %}
+        </div>
 
-        <button onclick="myfun('pt')" class="btn btn-primary mt-3">Get Bill</button>
+
+        <button onclick="myfun('pt')" class="btn btn-primary mt-3">Print Reciept</button>
     </div>
 
 </div>

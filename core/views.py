@@ -13,7 +13,9 @@ from django.urls import reverse
 from django.views.generic import ListView, DetailView, View
 from .models import Item, Order, OrderItem, Refund,Balance , Transaction
 from .forms import RefundForm, PaymentForm
-
+from django.core.serializers import serialize
+import json
+from qrcode import make 
 
 
 
@@ -217,11 +219,10 @@ class PaymentView(View):
                 balance.balance = balance.balance - amount
                 balance.save()
                 # assign the payment to the orde    
-                its = []
+                
                 order_items = order.items.all()
                 order_items.update(ordered=True)
-                for item in order_items:
-                    its.append(item)
+                for item in order_items:                    
                     for store_item in store_items:
                         if store_item.slug == item.item.slug:
                             store_item.quantity -= item.quantity
@@ -236,9 +237,14 @@ class PaymentView(View):
                 
                 order.save()
                 messages.success(self.request, "Your order was successful!")
+                its = serialize("json", order_items)
+                its = json.loads(its)
+                request.session['its'] = its 
                 
+                request.session['total'] = amount
+                request.session['order_id'] = order.pk()
                 #return redirect("/")
-                return redirect("core:reciept", kwargs={"its":its})
+                return redirect("core:reciept")
 
             else:
                 messages.warning(self.request, "Insufficent Funds")
@@ -254,8 +260,31 @@ class PaymentView(View):
     
     
 def recieptview(request, *args, **kwargs):
+
     
-    return render(request, 'reciept.html', kwargs=kwargs)
+    its = request.session['its']
+    total = request.session['total']
+    order_id = request.session['order_id']
+    
+    
+    
+    reciep = []
+    
+    for models in its:
+        key = models['fields']['item']
+        qty = models['fields']['quantity']
+        #print(models['fields']['item'])
+        item = Item.objects.get(pk=key)
+        reciep.append(dict(qty=qty, item_name=item.title, item_price=item.discount_price ))
+    
+    
+    
+    data = "{}/n {}/n {}/n {}/n ".format(request.user, order_id, reciep, total)   
+    img = make(data)
+    img_name = 'qr' + str(request.user) + '__' + order_id + '.png'
+    img.save(settings.MEDIA_ROOT + '/' + img_name)
+    
+    return render(request, 'reciept.html', context={'its': reciep, 'total': total, 'img_name': img_name })
     
 
 
