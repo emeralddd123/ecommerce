@@ -276,7 +276,7 @@ def recieptview(request, *args, **kwargs):
     )
     img = make(data)
     img_name = "qr" + str(request.user) + "__" + order_ref_code + ".png"
-    img.save(settings.MEDIA_ROOT + "/" + img_name)
+    img.save(settings.MEDIA_ROOT + "/qr_codes" + img_name)
 
     return render(
         request,
