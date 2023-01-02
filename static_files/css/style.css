@@ -1080,7 +1080,6 @@ form input[type="submit"] {
     padding: 15px 45px;
     width: auto;
     font-size: 16px;
-    text-transform: capitalize;
     line-height: normal;
     margin: 0 auto;
     display: flex;
