@@ -43,17 +43,3 @@ class PaymentForm(forms.Form):
     )
     
     
-'''
-    def __init__(self, *args, **kwargs):
-        super(CheckoutForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            Field.radios("name", legend_size=Size.MEDIUM, legend_tag="h1", inline=True),
-            Field.radios(
-                "method",
-                legend_size=Size.MEDIUM,
-                small=True,
-            ),
-            Submit("submit", "Submit"),
-        )
-        '''

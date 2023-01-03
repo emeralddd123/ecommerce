@@ -145,7 +145,7 @@ class RequestRefundView(View):
         context = {"form": form}
         return render(self.request, "request_refund.html", context)
 
-    def post(self, *args, **kwargs):
+    def post(self,request, *args, **kwargs):
         form = RefundForm(self.request.POST)
         if form.is_valid():
             ref_code = form.cleaned_data.get("ref_code")
@@ -159,13 +159,14 @@ class RequestRefundView(View):
 
                 # store the refund
                 refund = Refund()
+                refund.user = request.user
                 refund.order = order
                 refund.reason = message
                 refund.email = email
                 refund.save()
 
                 messages.info(self.request, "Your request was received.")
-                return redirect("core:request-refund")
+                return redirect("core:homepage")
 
             except ObjectDoesNotExist:
                 messages.info(self.request, "This order does not exist.")
