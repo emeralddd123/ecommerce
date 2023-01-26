@@ -10,6 +10,7 @@ from .views import (
     remove_single_item_from_cart,
     PaymentView,
     RequestRefundView,
+    subscribe
 )
 
 app_name = "core"
@@ -28,4 +29,5 @@ urlpatterns = [
     path("payment/", PaymentView.as_view(), name="payment"),
     path("reciept/", recieptview, name="reciept"),
     path("request-refund/", RequestRefundView.as_view(), name="request-refund"),
+    path('subscribe', subscribe, name='subscribe'),
 ]

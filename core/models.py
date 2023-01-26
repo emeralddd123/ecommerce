@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.shortcuts import reverse
 from django.conf import settings
+from django.utils import timezone
 from django.utils.text import slugify
 import random, string
 
@@ -134,3 +135,11 @@ class Transaction(models.Model):
     def generate_qrcode(self, *args, **kwargs):
 
         return None
+
+
+class SubscribedUser(models.Model):
+    email = models.EmailField(unique=True, max_length=100)
+    created_date = models.DateTimeField("Date created", default=timezone.now)
+
+    def __str__(self):
+        return self.email

@@ -1,9 +1,11 @@
 import random
 import string
-
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect, HttpResponse
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
@@ -11,7 +13,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.utils import timezone
 from django.urls import reverse
 from django.views.generic import ListView, DetailView, View
-from .models import Item, Order, OrderItem, Refund, Balance, Transaction
+from .models import Item, Order, OrderItem, Refund, Balance, Transaction, SubscribedUser
 from .forms import RefundForm, PaymentForm
 from django.core.serializers import serialize
 import json
@@ -30,6 +32,7 @@ class HomeView(ListView):
 class ProductListView(ListView):
     model = Item
     template_name = "product_list.html"
+
 
 def is_valid_form(values):
     valid = True
@@ -149,7 +152,7 @@ class RequestRefundView(View):
         context = {"form": form}
         return render(self.request, "request_refund.html", context)
 
-    def post(self,request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         form = RefundForm(self.request.POST)
         if form.is_valid():
             ref_code = form.cleaned_data.get("ref_code")
@@ -180,7 +183,7 @@ class RequestRefundView(View):
 class PaymentView(View):
     def get(self, *args, **kwargs):
         form = PaymentForm()
-        order=Order.objects.filter(user=self.request.user).last()
+        order = Order.objects.filter(user=self.request.user).last()
         amount = order.get_total()
         context = {
             "order": order,
@@ -191,7 +194,7 @@ class PaymentView(View):
 
     def post(self, request, *args, **kwargs):
 
-        order=Order.objects.filter(user=self.request.user).last()
+        order = Order.objects.filter(user=self.request.user).last()
         store_items = Item.objects.all()
         balance = Balance.objects.get(user=self.request.user)
         amount = int(order.get_total())
@@ -258,10 +261,8 @@ def recieptview(request, *args, **kwargs):
             item_price = item.discount_price
         else:
             item_price = item.price
-        #print(item_price)
-        reciep.append(
-            dict(qty=qty, item_name=item.title, item_price=item_price)
-        )
+        # print(item_price)
+        reciep.append(dict(qty=qty, item_name=item.title, item_price=item_price))
 
     data = """
     'username: '{}
@@ -289,3 +290,41 @@ def recieptview(request, *args, **kwargs):
             "order_ref_code": order_ref_code,
         },
     )
+
+
+def subscribe(request):
+    if request.method == "POST":
+        email = request.POST.get("email", None)
+
+        if "@" and "." not in email:
+            messages.error(
+                request,
+                "You must type legit name and email to subscribe to a Newsletter",
+            )
+            return redirect("/")
+
+        if get_user_model().objects.filter(email=email).first():
+            messages.error(
+                request,
+                f"Found registered user with associated {email} email. You must login to subscribe or unsubscribe.",
+            )
+            return redirect(request.META.get("HTTP_REFERER", "/"))
+
+        subscribe_user = SubscribedUser.objects.filter(email=email).first()
+        if subscribe_user:
+            messages.error(request, f"{email} email address is already subscriber.")
+            return redirect(request.META.get("HTTP_REFERER", "/"))
+
+        try:
+            validate_email(email)
+        except ValidationError as e:
+            messages.error(request, e.messages[0])
+            return redirect("/")
+
+        subscribe_model_instance = SubscribedUser()
+        subscribe_model_instance.email = email
+        subscribe_model_instance.save()
+        messages.success(
+            request, f"{email} email was successfully subscribed to our newsletter!"
+        )
+        return redirect(request.META.get("HTTP_REFERER", "/"))

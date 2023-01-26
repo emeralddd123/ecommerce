@@ -27,6 +27,13 @@
 </head>
 
 <body>
+   {% if messages %}
+   <ul class="messages">
+      {% for message in messages %}
+      <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+      {% endfor %}
+   </ul>
+   {% endif %}
    <div class="hero_area">
       <!-- header section strats -->
       <header class="header_section">
@@ -34,8 +41,7 @@
          <div class="container">
 
             <nav class="navbar navbar-expand-lg custom_nav-container navbar-fixed-top">
-               <a class="navbar-brand" href="/"><img width="250" src={% static 'images/logo.png' %}
-                     alt="#" /></a>
+               <a class="navbar-brand" href="/"><img width="250" src={% static 'images/logo.png' %} alt="#" /></a>
                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                   aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                   <span class=""> </span>
@@ -73,20 +79,16 @@
                         </ul>
                      </li>
                      {% else %}
-                        <li class="nav-item active float-right">
-                            <a class="nav-link" href="/accounts/login">login</a>
-                        </li>
-                        <li class="nav-item active float-right">
-                            <a class="nav-link" href="/accounts/signup">signup</a>
+                     <li class="nav-item active float-right">
+                        <a class="nav-link" href="/accounts/login">login</a>
+                     </li>
+                     <li class="nav-item active float-right">
+                        <a class="nav-link" href="/accounts/signup">signup</a>
+                     </li>
                         </li> 
+                     </li>
                      {% endif %}
-                     
 
-                     
-                     
-
-
-                     
                   </ul>
                </div>
             </nav>
@@ -97,7 +99,7 @@
       <!-- slider section -->
       <section class="slider_section ">
          <div class="slider_bg_box">
-            <img src="images/slider-bg.jpg" alt="">
+            <img src={% static 'images/slider-bg.jpg' %} alt="">
          </div>
          <div id="customCarousel1" class="carousel slide" data-ride="carousel">
             <div class="carousel-inner">
@@ -114,12 +116,13 @@
                                  On Everything
                               </h1>
                               <p>
-                                 Explicabo esse amet tempora quibusdam laudantium, laborum eaque magnam fugiat hic? Esse
-                                 dicta aliquid error repudiandae earum suscipit fugiat molestias, veniam, vel architecto
-                                 veritatis delectus repellat modi impedit sequi.
+                                 Welcome to our online store! We are excited to offer you
+                                 a wide selection of products at competitive prices. Our goal is to p
+                                 rovide you with a convenient and enjoyable shopping experience.
+                                 Thank you for choosing us!
                               </p>
                               <div class="btn-box">
-                                 <a href="" class="btn1">
+                                 <a href="/products" class="btn1">
                                     Shop Now
                                  </a>
                               </div>
@@ -135,18 +138,20 @@
                            <div class="detail-box">
                               <h1>
                                  <span>
-                                    Sale 20% Off
+                                    Free Delivery
                                  </span>
                                  <br>
-                                 On Everything
+                                 On Selected Orders
                               </h1>
                               <p>
-                                 Explicabo esse amet tempora quibusdam laudantium, laborum eaque magnam fugiat hic? Esse
-                                 dicta aliquid error repudiandae earum suscipit fugiat molestias, veniam, vel architecto
-                                 veritatis delectus repellat modi impedit sequi.
+                                 Welcome to our ecommerce site! We are thrilled to have you here
+                                 and are dedicated to providing you with the best possible
+                                 shopping experience. Browse our extensive collection of
+                                 products and enjoy the convenience of online shopping with us.
+                                 Thank you for choosing to shop with us.
                               </p>
                               <div class="btn-box">
-                                 <a href="" class="btn1">
+                                 <a href="/products" class="btn1">
                                     Shop Now
                                  </a>
                               </div>
@@ -162,18 +167,25 @@
                            <div class="detail-box">
                               <h1>
                                  <span>
-                                    Sale 20% Off
+                                    Welcome Bonus
                                  </span>
                                  <br>
-                                 On Everything
+                                 for new Users
                               </h1>
                               <p>
-                                 Explicabo esse amet tempora quibusdam laudantium, laborum eaque magnam fugiat hic? Esse
+                                 Welcome to our ecommerce store! We have a wide range of products for you to choose
+                                 from,
+                                 and we're sure you'll find something you love. From the comfort of your own home, shop
+                                 our selection
+                                 of high-quality goods at great prices. We're here to make your
+                                 shopping experience easy and enjoyable. Thank you for visiting
+                                 us!Explicabo esse amet tempora quibusdam laudantium, laborum eaque magnam
+                                 fugiat hic? Esse
                                  dicta aliquid error repudiandae earum suscipit fugiat molestias, veniam, vel architecto
                                  veritatis delectus repellat modi impedit sequi.
                               </p>
                               <div class="btn-box">
-                                 <a href="" class="btn1">
+                                 <a href="/products" class="btn1">
                                     Shop Now
                                  </a>
                               </div>
@@ -226,7 +238,7 @@
    <!-- end arrival section -->
 
    <!-- product section -->
-   <section class="product_section layout_padding">
+   <section class="product_section layout_padding" style="margin-bottom:100px;">
       <div class="container">
          <div class="heading_container heading_center">
             <h2>
@@ -234,340 +246,39 @@
             </h2>
          </div>
          <div class="row">
+            {% for item in object_list %}
             <div class="col-sm-6 col-md-4 col-lg-4">
                <div class="box">
                   <div class="option_container">
                      <div class="options">
-                        <a href="" class="option1">
-                           Men's Shirt
+                        <a href="{{item.get_add_to_cart_url}}" class="option1">
+                           Add to cart
                         </a>
-                        <a href="" class="option2">
-                           Buy Now
-                        </a>
-                     </div>
-                  </div>
-                  <div class="img-box">
-                     <img src={% static 'images/p1.png' %} alt="">
-                  </div>
-                  <div class="detail-box">
-                     <h5>
-                        Men's Shirt
-                     </h5>
-                     <h6>
-                        $75
-                     </h6>
-                  </div>
-               </div>
-            </div>
-            <div class="col-sm-6 col-md-4 col-lg-4">
-               <div class="box">
-                  <div class="option_container">
-                     <div class="options">
-                        <a href="" class="option1">
-                           Add To Cart
-                        </a>
-                        <a href="" class="option2">
-                           Buy Now
+                        <a href="{{item.get_absolute_url}}" class="option2">
+                           Item details
                         </a>
                      </div>
                   </div>
                   <div class="img-box">
-                     <img src={% static 'images/p2.png' %} alt="">
+                     <img src="{{item.image.url}}" alt="">
                   </div>
                   <div class="detail-box">
                      <h5>
-                        Men's Shirt
+                        {{item.title}}
                      </h5>
                      <h6>
-                        $80
+                        ${{item.price|intcomma}}
                      </h6>
                   </div>
                </div>
             </div>
-            <div class="col-sm-6 col-md-4 col-lg-4">
-               <div class="box">
-                  <div class="option_container">
-                     <div class="options">
-                        <a href="" class="option1">
-                           Add To Cart
-                        </a>
-                        <a href="" class="option2">
-                           Buy Now
-                        </a>
-                     </div>
-                  </div>
-                  <div class="img-box">
-                     <img src={% static 'images/p3.png' %} alt="">
-                  </div>
-                  <div class="detail-box">
-                     <h5>
-                        Women's Dress
-                     </h5>
-                     <h6>
-                        $68
-                     </h6>
-                  </div>
-               </div>
-            </div>
-            <div class="col-sm-6 col-md-4 col-lg-4">
-               <div class="box">
-                  <div class="option_container">
-                     <div class="options">
-                        <a href="" class="option1">
-                           Add To Cart
-                        </a>
-                        <a href="" class="option2">
-                           Buy Now
-                        </a>
-                     </div>
-                  </div>
-                  <div class="img-box">
-                     <img src={% static 'images/p4.png' %} alt="">
-                  </div>
-                  <div class="detail-box">
-                     <h5>
-                        Women's Dress
-                     </h5>
-                     <h6>
-                        $70
-                     </h6>
-                  </div>
-               </div>
-            </div>
-            <div class="col-sm-6 col-md-4 col-lg-4">
-               <div class="box">
-                  <div class="option_container">
-                     <div class="options">
-                        <a href="" class="option1">
-                           Add To Cart
-                        </a>
-                        <a href="" class="option2">
-                           Buy Now
-                        </a>
-                     </div>
-                  </div>
-                  <div class="img-box">
-                     <img src={% static 'images/p5.png' %} alt="">
-                  </div>
-                  <div class="detail-box">
-                     <h5>
-                        Women's Dress
-                     </h5>
-                     <h6>
-                        $75
-                     </h6>
-                  </div>
-               </div>
-            </div>
-            <div class="col-sm-6 col-md-4 col-lg-4">
-               <div class="box">
-                  <div class="option_container">
-                     <div class="options">
-                        <a href="" class="option1">
-                           Add To Cart
-                        </a>
-                        <a href="" class="option2">
-                           Buy Now
-                        </a>
-                     </div>
-                  </div>
-                  <div class="img-box">
-                     <img src={% static 'images/p6.png' %} alt="">
-                  </div>
-                  <div class="detail-box">
-                     <h5>
-                        Women's Dress
-                     </h5>
-                     <h6>
-                        $58
-                     </h6>
-                  </div>
-               </div>
-            </div>
-            <div class="col-sm-6 col-md-4 col-lg-4">
-               <div class="box">
-                  <div class="option_container">
-                     <div class="options">
-                        <a href="" class="option1">
-                           Add To Cart
-                        </a>
-                        <a href="" class="option2">
-                           Buy Now
-                        </a>
-                     </div>
-                  </div>
-                  <div class="img-box">
-                     <img src={% static 'images/p7.png' %} alt="">
-                  </div>
-                  <div class="detail-box">
-                     <h5>
-                        Women's Dress
-                     </h5>
-                     <h6>
-                        $80
-                     </h6>
-                  </div>
-               </div>
-            </div>
-            <div class="col-sm-6 col-md-4 col-lg-4">
-               <div class="box">
-                  <div class="option_container">
-                     <div class="options">
-                        <a href="" class="option1">
-                           Add To Cart
-                        </a>
-                        <a href="" class="option2">
-                           Buy Now
-                        </a>
-                     </div>
-                  </div>
-                  <div class="img-box">
-                     <img src={% static 'images/p8.png' %} alt="">
-                  </div>
-                  <div class="detail-box">
-                     <h5>
-                        Men's Shirt
-                     </h5>
-                     <h6>
-                        $65
-                     </h6>
-                  </div>
-               </div>
-            </div>
-            <div class="col-sm-6 col-md-4 col-lg-4">
-               <div class="box">
-                  <div class="option_container">
-                     <div class="options">
-                        <a href="" class="option1">
-                           Add To Cart
-                        </a>
-                        <a href="" class="option2">
-                           Buy Now
-                        </a>
-                     </div>
-                  </div>
-                  <div class="img-box">
-                     <img src={% static 'images/p9.png' %} alt="">
-                  </div>
-                  <div class="detail-box">
-                     <h5>
-                        Men's Shirt
-                     </h5>
-                     <h6>
-                        $65
-                     </h6>
-                  </div>
-               </div>
-            </div>
-            <div class="col-sm-6 col-md-4 col-lg-4">
-               <div class="box">
-                  <div class="option_container">
-                     <div class="options">
-                        <a href="" class="option1">
-                           Add To Cart
-                        </a>
-                        <a href="" class="option2">
-                           Buy Now
-                        </a>
-                     </div>
-                  </div>
-                  <div class="img-box">
-                     <img src={% static 'images/p10.png' %} alt="">
-                  </div>
-                  <div class="detail-box">
-                     <h5>
-                        Men's Shirt
-                     </h5>
-                     <h6>
-                        $65
-                     </h6>
-                  </div>
-               </div>
-            </div>
-            <div class="col-sm-6 col-md-4 col-lg-4">
-               <div class="box">
-                  <div class="option_container">
-                     <div class="options">
-                        <a href="" class="option1">
-                           Add To Cart
-                        </a>
-                        <a href="" class="option2">
-                           Buy Now
-                        </a>
-                     </div>
-                  </div>
-                  <div class="img-box">
-                     <img src={% static 'images/p11.png' %} alt="">
-                  </div>
-                  <div class="detail-box">
-                     <h5>
-                        Men's Shirt
-                     </h5>
-                     <h6>
-                        $65
-                     </h6>
-                  </div>
-               </div>
-            </div>
-            <div class="col-sm-6 col-md-4 col-lg-4">
-               <div class="box">
-                  <div class="option_container">
-                     <div class="options">
-                        <a href="" class="option1">
-                           Add To Cart
-                        </a>
-                        <a href="" class="option2">
-                           Buy Now
-                        </a>
-                     </div>
-                  </div>
-                  <div class="img-box">
-                     <img src={% static 'images/p12.png' %} alt="">
-                  </div>
-                  <div class="detail-box">
-                     <h5>
-                        Women's Dress
-                     </h5>
-                     <h6>
-                        $65
-                     </h6>
-                  </div>
-               </div>
-            </div>
+            {% endfor %}
+
+
          </div>
-         <div class="btn-box">
-            <a href="">
-               View All products
-            </a>
-         </div>
-      </div>
    </section>
    <!-- end product section -->
 
-   <!-- subscribe section -->
-   <section class="subscribe_section">
-      <div class="container-fuild">
-         <div class="box">
-            <div class="row">
-               <div class="col-md-6 offset-md-3">
-                  <div class="subscribe_form ">
-                     <div class="heading_container heading_center">
-                        <h3>Subscribe To Get Discount Offers</h3>
-                     </div>
-                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
-                     <form action="">
-                        <input type="email" placeholder="Enter your email">
-                        <button>
-                           subscribe
-                        </button>
-                     </form>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
-   </section>
-   <!-- end subscribe section -->
    <!-- footer start -->
    <footer>
       <div class="container">
@@ -623,13 +334,18 @@
                            <p>Subscribe by our newsletter and get update protidin.</p>
                         </div>
                         <div class="form_sub">
-                           <form>
-                              <fieldset>
-                                 <div class="field">
-                                    <input type="email" placeholder="Enter Your Mail" name="email" />
-                                    <input type="submit" value="Subscribe" />
-                                 </div>
-                              </fieldset>
+                           <form action="/subscribe" method="POST">
+                              {% csrf_token %}
+                              <div id="div_id_email" class="ctrlHolder">
+
+                                 <label for="id_email" class="requiredField">
+                                    email<span class="asteriskField">*</span>
+                                 </label>
+                                 <input type="text" name="email" class="textinput textInput" required="" id="id_email">
+                              </div>
+                              <button class="btn btn-danger" type="submit">
+                                 subscribe
+                              </button>
                            </form>
                         </div>
                      </div>
@@ -645,7 +361,7 @@
 
 
 
-   <div class="cpy_" style="position: absolute; bottom: 5px;text-align: center; width: 100%;">
+   <div class="cpy_" style="position: absolute; bottom: 5px;text-align: center; width: 100%; ;">
       <p>© 2021 All Rights Reserved By <a href="">Free Html Templates</a></p>
    </div>
    <!-- jQery -->
