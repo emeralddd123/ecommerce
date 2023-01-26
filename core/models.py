@@ -5,6 +5,7 @@ from django.conf import settings
 from django.utils.text import slugify
 import random, string
 
+
 import qrcode
 
 # Create your models here.
@@ -31,7 +32,8 @@ class Item(models.Model):
     discount_price = models.DecimalField(
         max_digits=9, decimal_places=2, blank=True, null=True
     )
-    description = models.TextField()
+    description = models.TextField(max_length=450)
+    specifications = models.JSONField(null=True, blank=True)
     quantity = models.PositiveIntegerField()
     image = models.ImageField()
 

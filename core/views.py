@@ -27,6 +27,10 @@ class HomeView(ListView):
     template_name = "index.html"
 
 
+class ProductListView(ListView):
+    model = Item
+    template_name = "product_list.html"
+
 def is_valid_form(values):
     valid = True
     for field in values:
@@ -45,7 +49,7 @@ def products(request):
 
 class ItemDetailView(DetailView):
     model = Item
-    template_name = "product.html"
+    template_name = "product_detail.html"
 
 
 class OrderSummaryView(LoginRequiredMixin, View):
@@ -250,8 +254,13 @@ def recieptview(request, *args, **kwargs):
         key = models["fields"]["item"]
         qty = models["fields"]["quantity"]
         item = Item.objects.get(pk=key)
+        if item.discount_price:
+            item_price = item.discount_price
+        else:
+            item_price = item.price
+        #print(item_price)
         reciep.append(
-            dict(qty=qty, item_name=item.title, item_price=item.discount_price)
+            dict(qty=qty, item_name=item.title, item_price=item_price)
         )
 
     data = """

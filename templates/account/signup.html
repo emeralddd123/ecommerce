@@ -1,9 +1,9 @@
-{% extends "base.html" %}
+{% extends "index.html" %}
 
 {% load crispy_forms_tags %}
 
 
-{% block body %} 
+{% block content %} 
 
      
 <br>
@@ -16,10 +16,10 @@
 	<form method="POST">
 		{% csrf_token %}
 		{{ form|crispy }}                    
-		<button class="btn btn-primary" type="submit">Register</button>
+		<button class="btn btn-danger" type="submit">Register</button>
 	</form>
 	<p class="text-center">If you already have an account, <a href="/accounts/login">login</a> instead.</p>
 </div>
 </div>
 
-{% endblock %}
+{% endblock content%}

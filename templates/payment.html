@@ -1,7 +1,7 @@
-{% extends "base.html" %}
+{% extends "index.html" %}
 {% load crispy_forms_tags %}
 {%load humanize%}
-{% block body %}
+{% block content %}
 
   <main >
     <div class="container wow fadeIn">
@@ -16,7 +16,7 @@
                 {{form|crispy }}
               <hr class="mb-4">
               <p> <b>Total Amount: {{amount|intcomma}}</b> </p>
-              <button class="btn btn-primary btn-lg btn-block" type="submit">Pay</button>
+              <button class="btn btn-secondary btn-lg btn-block" type="submit">Pay</button>
 
             </form>
 
@@ -33,5 +33,5 @@
     </div>
   </main>
 
-{% endblock body %}
+{% endblock content %}
 
