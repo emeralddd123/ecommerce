@@ -24,7 +24,7 @@ def create_ref_code():
 
 class HomeView(ListView):
     model = Item
-    template_name = "home.html"
+    template_name = "index.html"
 
 
 def is_valid_form(values):
